@@ -10,9 +10,10 @@ def main():
     prog = "train_ember"
     descr = "Train an ember model from a directory with raw feature files"
     parser = argparse.ArgumentParser(prog=prog, description=descr)
-    parser.add_argument("-v", "--featureversion", type=int, default=2, help="EMBER feature version")
-    parser.add_argument("datadir", metavar="DATADIR", type=str, help="Directory with raw features")
-    parser.add_argument("--optimize", help="gridsearch to find best parameters", action="store_true")
+    parser.add_argument("-v", "--featureversion", type=int, default=2, help="EMBER feature version", required=False)
+    parser.add_argument("--datadir", type=str, help="Directory with raw features", required=True)
+    parser.add_argument("--optimize", help="gridsearch to find best parameters", action="store_true", required=False)
+    parser.add_argument("--outdir", type=str, help="Directory where model gets stored", required=True)
     args = parser.parse_args()
 
     if not os.path.exists(args.datadir) or not os.path.isdir(args.datadir):
@@ -39,9 +40,12 @@ def main():
         print("Best parameters: ")
         print(json.dumps(params, indent=2))
 
+    if not os.path.exists(args.outdir) or not os.path.isdir(args.outdir):
+        os.makedirs(args.outdir)
+
     print("Training LightGBM model")
     lgbm_model = ember.train_model(args.datadir, params, args.featureversion)
-    lgbm_model.save_model(os.path.join(args.datadir, "model.txt"))
+    lgbm_model.save_model(os.path.join(args.outdir, "model.txt"))
 
 
 if __name__ == "__main__":

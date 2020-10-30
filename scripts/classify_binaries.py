@@ -12,7 +12,7 @@ def main():
     parser = argparse.ArgumentParser(prog=prog, description=descr)
     parser.add_argument("-v", "--featureversion", type=int, default=2, help="EMBER feature version")
     parser.add_argument("-m", "--modelpath", type=str, default=None, required=True, help="Ember model")
-    parser.add_argument("binaries", metavar="BINARIES", type=str, nargs="+", help="PE files to classify")
+    parser.add_argument("--binaries", type=str, nargs="+", help="PE files to classify", required=True)
     args = parser.parse_args()
 
     if not os.path.exists(args.modelpath):
